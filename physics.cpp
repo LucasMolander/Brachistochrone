@@ -6,6 +6,20 @@
 
 namespace physics {
 
+Force Acceleration::getForce(float mass) const {
+  return Force {x * mass, y * mass};
+}
+
+std::string Acceleration::toString() {
+  char buf[512];
+  sprintf(
+    buf,
+    "<%.2f, %.2f>",
+    x, y
+  );
+  return std::string(buf);
+}
+
 std::string Pos::toString() {
   char buf[512];
   sprintf(
@@ -36,16 +50,17 @@ std::string Body::toString() {
   sprintf(
     buf,
     "Body {mass=%.2f, pos=%s, Fg=%s, Fnet=%s}",
-    m_mass, m_pos.toString().c_str(), fg.toString().c_str(), nf.toString().c_str()
+    m_mass,
+    m_pos.toString().c_str(),
+    fg.toString().c_str(),
+    nf.toString().c_str()
   );
   return std::string(buf);
 }
 
 Force Body::getNetForce() {
   Force out {};
-  for (const Force& f : m_forces) {
-    out += f;
-  }
+  out += getNormalForce();
   out += getFg();
   return out;
 }
@@ -56,12 +71,18 @@ Acceleration Body::getNetAcceleration() {
 }
 
 Force Body::getFg() {
-  return GRAVITY.getForce(m_mass);
+  return m_force_gravity;
 }
 
-void Body::setForces(std::vector<Force>& forces) {
-  m_forces = forces;
+Force Body::getNormalForce() {
+  return m_force_normal;
 }
+
+void Body::setNormalForce(Surface& s) {
+  m_force_normal = s.getNormalForce(*this);
+}
+
+
 
 
 /**

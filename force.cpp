@@ -1,5 +1,6 @@
 #include <cmath>
 
+#include "physics.h"
 #include "force.h"
 
 namespace physics {

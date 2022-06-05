@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include "acceleration.h"
-
 
 namespace physics {
 

@@ -5,10 +5,12 @@
 #include <cmath>
 
 #include "force.h"
-#include "acceleration.h"
 
 namespace physics {
 
+// --------------------------------------------------
+//               Basic mechanics stuff
+// --------------------------------------------------
 struct Pos {
   float x;
   float y;
@@ -23,12 +25,24 @@ struct Velocity {
   std::string toString();
 };
 
+struct Acceleration {
+  float x;
+  float y;
+
+  std::string toString();
+
+  Force getForce(float mass) const;
+};
+
+const static Acceleration GRAVITY {0.0, -9.80665};
+
 
 const static float PI = 3.141'592'653'589'793'238;
 
 const static float DEGREE_TO_RAD = PI / 180.0;
 
 
+struct Surface;
 
 /**
  * In order to keep track of the state of an object, we'll just store all of
@@ -41,11 +55,13 @@ class Body {
     float m_mass;
     Pos m_pos;
     Velocity m_velocity;
-    /** In Newtons */
-    std::vector<Force> m_forces;
+    Force m_force_normal;
+    Force m_force_gravity;
 
   public:
-    Body(float mass, float x, float y) : m_mass{mass}, m_pos{x, y} {};
+    Body(float mass, float x, float y) : m_mass{mass}, m_pos{x, y} {
+      m_force_gravity = GRAVITY.getForce(mass);
+    };
 
     Force getNetForce();
 
@@ -54,8 +70,10 @@ class Body {
     /** Force of gravity, in Newtons */
     Force getFg();
 
-    /** Force of gravity already accounted for in `getFg()` */
-    void setForces(std::vector<Force>& forces);
+    /** Newtons */
+    Force getNormalForce();
+
+    void setNormalForce(Surface& s);
 
     std::string toString();
 };
