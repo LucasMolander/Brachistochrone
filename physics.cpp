@@ -1,21 +1,10 @@
-#include "physics.h"
 #include <string>
 #include <cstdio>
 #include <cmath>
 
+#include "physics.h"
 
 namespace physics {
-
-/**
- * Pos and Force and Acceleration and stuff.
- */
-Acceleration Force::getAcceleration(float mass) const {
-  return Acceleration {x / mass, y / mass};
-};
-
-Force Acceleration::getForce(float mass) const {
-  return Force {x * mass, y * mass};
-}
 
 std::string Pos::toString() {
   char buf[512];
@@ -27,7 +16,7 @@ std::string Pos::toString() {
   return std::string(buf);
 }
 
-std::string Acceleration::toString() {
+std::string Velocity::toString() {
   char buf[512];
   sprintf(
     buf,
@@ -36,21 +25,6 @@ std::string Acceleration::toString() {
   );
   return std::string(buf);
 }
-
-std::string Force::toString() {
-  char buf[512];
-  sprintf(
-    buf,
-    "<%.2f, %.2f>",
-    x, y
-  );
-  return std::string(buf);
-}
-
-float Force::magnitude() {
-  return sqrt(x*x + y*y);
-}
-
 
 /**
  * Body stuff.

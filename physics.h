@@ -4,6 +4,9 @@
 #include <vector>
 #include <cmath>
 
+#include "force.h"
+#include "acceleration.h"
+
 namespace physics {
 
 struct Pos {
@@ -13,31 +16,13 @@ struct Pos {
   std::string toString();
 };
 
-struct Force {
-  float x;
-  float y;
-
-  float magnitude();
-
-  std::string toString();
-
-  void operator *= (float mul) { x *= mul; y *= mul; }
-
-  void operator += (const Force& o) { x += o.x; y += o.y; }
-
-  Acceleration getAcceleration(float mass) const;
-};
-
-struct Acceleration {
+struct Velocity {
   float x;
   float y;
 
   std::string toString();
-
-  Force getForce(float mass) const;
 };
 
-const static Acceleration GRAVITY {0.0, -9.80665};
 
 const static float PI = 3.141'592'653'589'793'238;
 
@@ -55,6 +40,7 @@ class Body {
     /** In Kilograms */
     float m_mass;
     Pos m_pos;
+    Velocity m_velocity;
     /** In Newtons */
     std::vector<Force> m_forces;
 
