@@ -15,6 +15,12 @@ struct Pos {
   float x;
   float y;
 
+  float mag() { return sqrt(x*x + y*y); };
+
+  Pos operator + (const Pos& o) { return Pos{x + o.x, y + o.y}; };
+
+  void operator += (const Pos& o) { x += o.x; y += o.y; };
+
   std::string toString();
 };
 
@@ -22,12 +28,29 @@ struct Velocity {
   float x;
   float y;
 
+  float mag() { return sqrt(x*x + y*y); };
+
+  /** Displacement = Velocity * Time */
+  Pos getDisplacement(float t) { return Pos {x*t, y*t}; };
+
+  Velocity operator + (const Velocity& o) { return Velocity{ x + o.x, y + o.y }; };
+
+  void operator += (const Velocity& o) { x += o.x; y += o.y; };
+
   std::string toString();
 };
 
 struct Acceleration {
   float x;
   float y;
+
+  float mag() { return sqrt(x*x + y*y); };
+
+  /** Displacement = (1/2)at^2 */
+  Pos getDisplacement(float t) { return Pos{0.5f*x*t*t, 0.5f*y*t*t}; };
+
+  /** Velocity = Acceleration * Time */
+  Velocity getVelocity(float t) { return Velocity{x*t, y*t}; };
 
   std::string toString();
 
@@ -75,6 +98,9 @@ class Body {
 
     void setNormalForce(Surface& s);
 
+    /** Updates position and velocity. @return Time taken */
+    float travel(Surface& s);
+
     std::string toString();
 };
 
@@ -87,10 +113,14 @@ class Surface {
      */
     float m_angle;
 
+    float m_length;
+
   public:
-    Surface(float angle) : m_angle{angle} {};
+    Surface(float angle, float length) : m_angle{angle}, m_length{length} {};
 
     Force getNormalForce(Body& b);
+
+    float getLength();
 
     std::string toString();
 };
